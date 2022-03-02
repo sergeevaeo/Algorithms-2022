@@ -1,6 +1,12 @@
 package lesson1;
 
 import kotlin.NotImplementedError;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+
+
 
 @SuppressWarnings("unused")
 public class JavaTasks {
@@ -34,9 +40,10 @@ public class JavaTasks {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public void sortTimes(String inputName, String outputName) {
-        throw new NotImplementedError();
+
+    static public void sortTimes(String inputName, String outputName)  {
     }
+
 
     /**
      * Сортировка адресов
@@ -98,8 +105,40 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
-    static public void sortTemperatures(String inputName, String outputName) {
-        throw new NotImplementedError();
+    //T = O(n) - трудоемкость
+    //R = O(n) - ресурсоемкость
+
+    static public void sortTemperatures(String inputName, String outputName) throws IOException {
+        double[] a = Files.lines(Paths.get(inputName)).mapToDouble(Double::parseDouble).toArray();
+        int[] b = new int[a.length];
+        for(int i = 0; i < a.length; i ++) {
+            b[i] =(int) (a[i] * 10);
+        }
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        for (int it : b) {
+            if (it < min) {
+                min = it;
+            }
+            if (it > max) {
+                max = it;
+            }
+        }
+        int[] count = new int[max - min + 1];
+        for (int element : b) {
+            count[element - min ]++;
+        }
+        int index = 0;
+        for (int i = 0; i < count.length; i++) {
+            for (int j = count[i]; j > 0; j--) {
+                b[index++] = i + min;
+            }
+        }
+        FileWriter writer = new FileWriter(outputName);
+        for (int it : b) {
+            writer.write((double)it/10 + "\n");
+        }
+        writer.close();
     }
 
     /**
@@ -131,8 +170,34 @@ public class JavaTasks {
      * 2
      * 2
      */
-    static public void sortSequence(String inputName, String outputName) {
-        throw new NotImplementedError();
+    //T = O(nlogn) - трудоемкость
+    //R = O(n)
+    static public void sortSequence(String inputName, String outputName) throws IOException {
+        int[] a = Files.lines(Paths.get(inputName)).mapToInt(Integer::parseInt).toArray();
+        int[] b = a.clone();
+        Arrays.sort(a);
+        int q = 1;
+        int number = -1;
+        int repeat = -1;
+        for (int i = 0; i < a.length - 1; i++) {
+            if (a[i] == a[i + 1]) {
+                q++;
+                if (repeat < q) {
+                    repeat = q;
+                    number = a[i];
+                }
+            } else {
+                q = 1;
+            }
+        }
+        FileWriter writer = new FileWriter(outputName);
+        for( int i = 0; i < a.length; i ++) {
+            if (b[i] != number) {
+                writer.write(b[i] + "\n");
+            }
+        }
+        for(int i = 0; i < repeat; i++) writer.write(number + "\n");
+        writer.close();
     }
 
     /**

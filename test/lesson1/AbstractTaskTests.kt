@@ -136,6 +136,43 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         } finally {
             File("temp.txt").delete()
         }
+//
+        try {
+            sortTemperatures("input/temp_in2.txt", "temp.txt")
+            assertFileContent(
+                "temp.txt",
+                """
+                    -1.0
+                    0.0
+                    0.0
+                    0.0
+                    1.0
+                    1.0
+                    2.2
+                """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
+        try {
+            sortTemperatures("input/temp_in3.txt", "temp.txt")
+            assertFileContent(
+                "temp.txt",
+                """
+                  -9.0
+                  -4.2
+                  -3.2
+                  -1.1
+                  -1.0
+                  -1.0
+                  -1.0
+                """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
+
+
 
         fun testGeneratedTemperatures(size: Int): PerfResult<Unit> {
             try {
@@ -298,6 +335,44 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         try {
             sortSequence("input/empty.txt", "temp.txt")
             assertFileContent("temp.txt", "")
+        } finally {
+            File("temp.txt").delete()
+        }
+
+        //
+        try {
+            sortSequence("input/seq_in6.txt", "temp.txt")
+            assertFileContent(
+                "temp.txt",
+                """
+                        1
+                        1
+                        1
+                        1
+                        0
+                        0
+                        0
+                        0
+                    """.trimIndent()
+            )
+        } finally {
+            File("temp.txt").delete()
+        }
+
+        try {
+            sortSequence("input/seq_in7.txt", "temp.txt")
+            assertFileContent(
+                "temp.txt",
+                """
+                        3331
+                        3333
+                        2221
+                        2222
+                        2222
+                        1111
+                        1111
+                    """.trimIndent()
+            )
         } finally {
             File("temp.txt").delete()
         }
