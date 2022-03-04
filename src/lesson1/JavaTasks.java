@@ -4,8 +4,9 @@ import kotlin.NotImplementedError;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
-
+import java.util.List;
 
 
 @SuppressWarnings("unused")
@@ -110,34 +111,38 @@ public class JavaTasks {
     //R = O(n) - ресурсоемкость
 
     static public void sortTemperatures(String inputName, String outputName) throws IOException {
-        double[] a = Files.lines(Paths.get(inputName)).mapToDouble(Double::parseDouble).toArray();
-        int[] b = new int[a.length];
-        for(int i = 0; i < a.length; i ++) {
-            b[i] =(int) (a[i] * 10);
-        }
+        BufferedReader reader = new BufferedReader(new FileReader(inputName));
+        String str;
+        List<Integer> list = new ArrayList<>();
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
-        for (int it : b) {
-            if (it < min) {
-                min = it;
-            }
-            if (it > max) {
-                max = it;
+        while((str = reader.readLine()) != null ){
+            if(!str.isEmpty()){
+                double temp = Double.parseDouble(str) * 10;
+                int k = (int) temp;
+                if (temp < min) {
+                    min = k;
+                }
+                if (temp > max) {
+                    max = k;
+                }
+                list.add(k);
             }
         }
+        reader.close();
         int[] count = new int[max - min + 1];
-        for (int element : b) {
-            count[element - min ]++;
+        for (int element : list) {
+            count[element - min]++;
         }
         int index = 0;
         for (int i = 0; i < count.length; i++) {
             for (int j = count[i]; j > 0; j--) {
-                b[index++] = i + min;
+                list.set(index++, i + min);
             }
         }
         FileWriter writer = new FileWriter(outputName);
-        for (int it : b) {
-            writer.write((double)it/10 + "\n");
+        for (int it : list) {
+            writer.write((it * 1.0)/10 + "\n");
         }
         writer.close();
     }
