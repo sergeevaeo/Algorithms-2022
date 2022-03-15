@@ -3,6 +3,11 @@ package lesson2;
 import kotlin.NotImplementedError;
 import kotlin.Pair;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Arrays;
+
 @SuppressWarnings("unused")
 public class JavaAlgorithms {
     /**
@@ -29,8 +34,27 @@ public class JavaAlgorithms {
      *
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName) {
-        throw new NotImplementedError();
+    //T = O(n) - трудоемкость
+    //R = O(n) - ресурсоемкость
+    static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName) throws IOException {
+        int[] a = Files.lines(Paths.get(inputName)).mapToInt(Integer::parseInt).toArray();
+        int minI = 0;
+        int myMinI = 0;
+        int maxI = 0;
+        int profit = 0;
+        for (int i = 1; i < a.length; i++) {
+            if (a[i] < a[minI]) {
+                minI = i;
+            } else {
+                if (a[i] - a[minI] > profit) {
+                    profit = a[i] - a[minI];
+                    maxI = i;
+                    myMinI = minI;
+
+                }
+            }
+        }
+        return new Pair<>(myMinI + 1, maxI +1);
     }
 
     /**
@@ -97,8 +121,33 @@ public class JavaAlgorithms {
      * Если имеется несколько самых длинных общих подстрок одной длины,
      * вернуть ту из них, которая встречается раньше в строке first.
      */
-    static public String longestCommonSubstring(String firs, String second) {
-        throw new NotImplementedError();
+    //T = O(first.length * second.length) - трудоемкость
+    //R = O(1) - ресурсоемкость
+    static public String longestCommonSubstring(String first, String second) {
+        if (first == null || second == null ||
+                first.length() == 0 || second.length() == 0) return "";
+        if (first.equals(second)) return first;
+        int [] [] table = new int[first.length()][];
+        int length = 0;
+        int I = 0;
+        for (int i = 0; i < table.length; i++) {
+            table[i] = new int [second.length()];
+            for (int j = 0; j < table[i].length; j ++ ) {
+                table[i][j] = 0;
+                if(first.charAt(i) == second.charAt(j)) {
+                    if(i != 0 && j != 0) {
+                        table[i][j] = table[i - 1][j - 1] + 1;
+                    } else {
+                        table[i][j] = 1;
+                    }
+                    if (table[i][j] > length) {
+                        length = table[i][j];
+                        I = i;
+                    }
+                }
+            }
+        }
+        return first.substring(I - length + 1, I + 1);
     }
 
     /**
@@ -111,7 +160,24 @@ public class JavaAlgorithms {
      * Справка: простым считается число, которое делится нацело только на 1 и на себя.
      * Единица простым числом не считается.
      */
+    //T = O(nlog(log(n)) - трудоемкость(решето Эратосфена)
+    //R = O(1) - ресурсоемкость
     static public int calcPrimesNumber(int limit) {
-        throw new NotImplementedError();
+        if (limit <= 1) return 0;
+        int[] primes = new int[limit + 1];
+        Arrays.fill(primes, 1);
+        primes[0] = 0;
+        primes[1] = 0;
+        int k = 0;
+        for (int i = 2; i < primes.length; i++) {
+            if (primes[i] == 1) {
+                for (int j = 2; i * j < primes.length; j++){
+                    primes[i * j] = 0;
+                }
+                k++;
+            }
+        }
+        return k;
     }
 }
+

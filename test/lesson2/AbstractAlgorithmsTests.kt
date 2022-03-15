@@ -46,6 +46,9 @@ abstract class AbstractAlgorithmsTests {
         assertEquals(3 to 4, optimizeBuyAndSell("input/buysell_in1.txt"))
         assertEquals(8 to 12, optimizeBuyAndSell("input/buysell_in2.txt"))
         assertEquals(3 to 4, optimizeBuyAndSell("input/buysell_in3.txt"))
+        //
+        assertEquals(1 to 2, optimizeBuyAndSell("input/buysell_in4.txt"))
+        assertEquals(1 to 8, optimizeBuyAndSell("input/buysell_in5.txt"))
         try {
             val expectedAnswer = generatePrices(1000)
             assertEquals(expectedAnswer, optimizeBuyAndSell("temp_prices.txt"))
@@ -58,6 +61,7 @@ abstract class AbstractAlgorithmsTests {
         } finally {
             File("temp_prices.txt").delete()
         }
+
     }
 
     fun josephTask(josephTask: (Int, Int) -> Int) {
@@ -120,6 +124,10 @@ abstract class AbstractAlgorithmsTests {
                 File("input/ruslan_ludmila_2.txt").readText()
             ).trim()
         )
+        //
+        assertEquals("", longestCommonSubstring("абвг", "АБВГ"))
+        assertEquals("итар", longestCommonSubstring("Гитара", "гитары"))
+
     }
 
     fun calcPrimesNumber(calcPrimesNumber: (Int) -> Int) {
@@ -148,5 +156,8 @@ abstract class AbstractAlgorithmsTests {
         assertEquals(148933, calcPrimesNumber(2000000))
         assertEquals(348513, calcPrimesNumber(5000000))
         assertEquals(664579, calcPrimesNumber(10000000))
+        //
+        assertEquals(12, calcPrimesNumber(37))
+        assertEquals(5, calcPrimesNumber(11))
     }
 }
