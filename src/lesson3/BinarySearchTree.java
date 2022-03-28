@@ -88,6 +88,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         return true;
     }
 
+
     /**
      * Удаление элемента из дерева
      *
@@ -99,11 +100,83 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
      *
      * Средняя
      */
+
+    //Трудоемкость О(n)
+    //Ресурсоемкость O(n)
     @Override
     public boolean remove(Object o) {
-        // TODO
-        throw new NotImplementedError();
+        @SuppressWarnings("unchecked")
+        T node = (T) o;
+        if (!contains(node)) return false;
+        Node<T> parent = null;
+        Node<T> closest = root;
+
+        while (closest.value != node) { //поиск узла и его родителя
+            parent = closest;
+            if (node.compareTo(closest.value) < 0) {
+                closest = closest.left;
+            } else {
+                closest = closest.right;
+            }
+        }
+
+        if (closest.left == null && closest.right == null) { // 1)если у узла нет потомков
+            if (parent == null) {
+                root = null;
+            } else if (parent.left == closest) {
+                parent.left = null;
+            } else parent.right = null;
+        }
+
+        else if (closest.left == null ) { //2) если есть только правый наследник
+            if (parent == null) {
+                root = closest.right;
+            }
+            else if (parent.left == closest) {
+                parent.left = closest.right;
+            } else {
+                parent.right = closest.right;
+            }
+        } else if (closest.right == null) { //то же самое, если есть только левый наследник
+            if (parent == null) {
+                root = closest.left;
+            }
+            else if (parent.left == closest) {
+                parent.left = closest.left;
+            } else {
+                parent.right = closest.left;
+            }
+        }
+
+        else { // 3)если есть два потомка, узел заменяется преемником
+            Node<T> parentS = closest;
+            Node<T> successor = closest;
+            Node<T> current = closest.right; //перешли к правому
+            while (current != null) {
+                parentS = successor;
+                successor = current;
+                current = current.left; // переход к крайнему левому потомку
+            }
+            if (successor != closest.right) {
+                parentS.left = successor.right;
+                successor.right = closest.right;
+            }
+
+            if (parent == null) {
+                root = successor;
+            } else if (parent.left == closest) {
+                parent.left = successor;
+            } else {
+                parent.right = successor;
+            }
+            successor.left = closest.left;
+        }
+        size--;
+        return true;
     }
+
+
+
 
     @Nullable
     @Override
@@ -118,10 +191,19 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     }
 
     public class BinarySearchTreeIterator implements Iterator<T> {
-
+        Node<T> delete = null;
+        Stack<Node<T>> stack;
         private BinarySearchTreeIterator() {
-            // Добавьте сюда инициализацию, если она необходима.
+            stack = new Stack<>();
+            if (root == null) return;
+            stack.push(root);
+            Node<T> closest = root.left;
+            while (closest != null) {
+                stack.push(closest);
+                closest = closest.left;
+            }
         }
+
 
         /**
          * Проверка наличия следующего элемента
@@ -133,10 +215,11 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          *
          * Средняя
          */
+        //Трудоемкость О(1)
+        //Ресурсоемкость O(1)
         @Override
         public boolean hasNext() {
-            // TODO
-            throw new NotImplementedError();
+            return !stack.isEmpty();
         }
 
         /**
@@ -152,11 +235,22 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          *
          * Средняя
          */
+        //Трудоемкость О(log(n))
+        //Ресурсоемкость O(n)
         @Override
         public T next() {
-            // TODO
-            throw new NotImplementedError();
+            if (!stack.isEmpty()) {
+                Node<T> result = stack.pop();
+                Node<T> closest = result.right;
+                while (closest != null) {
+                    stack.push(closest);
+                    closest = closest.left;
+                }
+                delete = result;
+                return result.value;
+            } else throw new NoSuchElementException();
         }
+
 
         /**
          * Удаление предыдущего элемента
@@ -170,10 +264,15 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
          *
          * Сложная
          */
+        //Трудоемкость О(n)
+        //Ресурсоемкость O(n)
         @Override
         public void remove() {
-            // TODO
-            throw new NotImplementedError();
+            if (delete == null) throw new IllegalStateException();
+                else {
+                    BinarySearchTree.this.remove(delete.value);
+                    delete = null;
+            }
         }
     }
 

@@ -1,11 +1,12 @@
 package lesson3
 
+import org.junit.jupiter.api.assertDoesNotThrow
 import java.util.*
 import kotlin.math.abs
-import kotlin.test.*
-import org.junit.jupiter.api.assertDoesNotThrow
-import kotlin.IllegalStateException
-import kotlin.NoSuchElementException
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 abstract class AbstractBinarySearchTreeTest {
 
@@ -162,6 +163,19 @@ abstract class AbstractBinarySearchTreeTest {
             }
             println("All clear!")
         }
+        //
+        val tree = BinarySearchTree<Int>()
+        val answer = setOf(-9, -1, 0, 10)
+        tree.add(-1)
+        tree.add(0)
+        tree.add(-4)
+        tree.add(-9)
+        tree.add(10)
+        tree.remove(-4)
+        tree.toSet()
+        assertEquals(
+            tree, answer
+        )
     }
 
     protected fun doIteratorTest() {
@@ -205,6 +219,22 @@ abstract class AbstractBinarySearchTreeTest {
             }
             println("All clear!")
         }
+        //
+        val tree = BinarySearchTree<Int>()
+        val result = mutableSetOf<Int>()
+        tree.add(-1)
+        tree.add(0)
+        tree.add(-4)
+        tree.add(-9)
+        tree.add(10)
+        val iterator1 = tree.iterator()
+        for (i: Int in 0..4) {
+            result.add(iterator1.next());
+        }
+        tree.toSet()
+        assertEquals(
+            tree, result
+        )
     }
 
     protected fun doIteratorRemoveTest() {
@@ -272,6 +302,21 @@ abstract class AbstractBinarySearchTreeTest {
             }
             println("All clear!")
         }
+        val tree = BinarySearchTree<Int>()
+        val answer = setOf(-9, -1, 0, 10)
+        tree.add(-1)
+        tree.add(0)
+        tree.add(-4)
+        tree.add(-9)
+        tree.add(10)
+        val iterator1 = tree.iterator()
+        iterator1.next()
+        iterator1.next()
+        iterator1.remove()
+        tree.toSet()
+        assertEquals(
+            tree, answer
+        )
     }
 
     protected fun doSubSetTest() {
