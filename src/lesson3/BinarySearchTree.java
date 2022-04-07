@@ -105,7 +105,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
     // чтобы  найти элемент, необходимо пройтись по всему дереву
     //Ресурсоемкость O(n)
 
-    public void it(Node<T> parent, Node<T> closest,  Node<T> value) {
+    public void replace(Node<T> parent, Node<T> closest,  Node<T> value) {
         if (parent == null) {
             root = value;
         } else if (parent.left == closest) {
@@ -131,14 +131,14 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
         }
 
         if (closest.left == null && closest.right == null) { // 1)если у узла нет потомков
-            it(parent, closest, null);
+            replace(parent, closest, null);
         }
 
         else if (closest.left == null ) { //2) если есть только правый наследник
-            it (parent, closest, closest.right);
+            replace (parent, closest, closest.right);
 
         } else if (closest.right == null) { //то же самое, если есть только левый наследник
-            it (parent, closest, closest.left);
+            replace (parent, closest, closest.left);
         }
 
         else { // 3)если есть два потомка, узел заменяется преемником
@@ -155,7 +155,7 @@ public class BinarySearchTree<T extends Comparable<T>> extends AbstractSet<T> im
                 successor.right = closest.right;
             }
 
-            it (parent, closest, successor);
+            replace (parent, closest, successor);
             successor.left = closest.left;
         }
         size--;
