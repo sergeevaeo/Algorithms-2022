@@ -77,6 +77,31 @@ abstract class AbstractOpenAddressingSetTest {
                 )
             }
         }
+        //
+        val table1 = OpenAddressingSet<Int>(8)
+        val result1 = mutableSetOf<Int>()
+        table1.add(0)
+        table1.add(1)
+        table1.add(6)
+        table1.remove(6)
+        result1.add(0)
+        result1.add(1)
+        assertEquals(
+            table1, result1
+        )
+
+        val table2 = OpenAddressingSet<String>(8)
+        val result2 = mutableSetOf<String>()
+        table2.add("rer")
+        table2.add("rtyu")
+        table2.add("asd")
+        table2.remove("rer")
+        result2.add("rtyu")
+        result2.add("asd")
+        assertEquals(
+            table2, result2
+        )
+
     }
 
     protected fun doIteratorTest() {
@@ -119,6 +144,35 @@ abstract class AbstractOpenAddressingSetTest {
             }
             println("All clear!")
         }
+        //
+        val table1 = OpenAddressingSet<Int>(8)
+        val answer1 = mutableSetOf<Int>()
+        val result1 = mutableSetOf<Int>()
+        table1.add(7)
+        table1.add(21)
+        table1.add(9)
+        val itr = table1.OpenAddressingSetIterator()
+        result1.add(itr.next())
+        result1.add(itr.next())
+        answer1.add(7)
+        answer1.add(9)
+        assertEquals(
+            answer1, result1
+        )
+
+        //
+        val table2 = OpenAddressingSet<String>(8)
+        table2.add("rer")
+        table2.add("rtyu")
+        table2.add("asd")
+        val iterator = table2.OpenAddressingSetIterator()
+        iterator.next()
+        iterator.next()
+        iterator.next()
+        assertFalse(
+            iterator.hasNext(), "Last element has next element"
+        )
+
     }
 
     protected fun doIteratorRemoveTest() {
@@ -176,5 +230,22 @@ abstract class AbstractOpenAddressingSetTest {
             }
             println("All clear!")
         }
+
+        //
+        val table1 = OpenAddressingSet<Int>(8)
+        val answer1 = mutableSetOf<Int>()
+        val result1 = mutableSetOf<Int>()
+        table1.add(7)
+        table1.add(21)
+        table1.add(9)
+        val itr = table1.OpenAddressingSetIterator()
+        result1.add(itr.next())
+        result1.add(itr.next())
+        itr.remove()
+        answer1.add(7)
+        answer1.add(9)
+        assertEquals(
+            answer1, result1
+        )
     }
 }

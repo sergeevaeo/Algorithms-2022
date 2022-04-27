@@ -110,6 +110,31 @@ abstract class AbstractTrieTest {
             }
             println("All clear!")
         }
+        //
+        val trie = Trie()
+        val result = mutableSetOf<String>()
+        val answer = mutableSetOf<String>()
+        trie.add("a")
+        trie.add("p")
+        trie.add("e")
+        trie.add("edr")
+        trie.add("abc")
+        trie.add("ed")
+
+        val iterator1 = trie.iterator()
+
+        for (i in 0..3) {
+            result.add(iterator1.next())
+        }
+
+        answer.add("a")
+        answer.add("abc")
+        answer.add("e")
+        answer.add("ed")
+
+        assertEquals(
+            answer, result
+        )
     }
 
     protected fun doIteratorRemoveTest() {
@@ -171,6 +196,31 @@ abstract class AbstractTrieTest {
             }
             println("All clear!")
         }
+        //
+        val trie = Trie()
+        val answer = mutableSetOf<String>()
+        trie.add("a")
+        trie.add("p")
+        trie.add("e")
+        trie.add("edr")
+        trie.add("abc")
+        trie.add("ed")
+
+        val iterator1 = trie.iterator()
+
+        iterator1.next()
+        iterator1.next()
+        iterator1.remove()
+
+        answer.add("a")
+        answer.add("e")
+        answer.add("ed")
+        answer.add("edr")
+        answer.add("p")
+
+        assertEquals(
+            answer, trie
+        )
     }
 
 }
