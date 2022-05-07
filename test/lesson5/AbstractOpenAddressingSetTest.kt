@@ -102,6 +102,18 @@ abstract class AbstractOpenAddressingSetTest {
             table2, result2
         )
 
+        //
+        val table3 = OpenAddressingSet<Int>(8)
+        val result3 = mutableSetOf<Int>()
+        table3.add(-1)
+        table3.add(8)
+        table3.add(10)
+        result3.add(8)
+        result3.add(9)
+        assertEquals(
+            result3, result3
+        )
+
     }
 
     protected fun doIteratorTest() {

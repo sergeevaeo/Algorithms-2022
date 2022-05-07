@@ -6,7 +6,8 @@ import java.util.*;
 
 public class OpenAddressingSet<T> extends AbstractSet<T> {
 
-    private final Integer deleted = -1;
+
+    private final Object deleted = new Object();
 
     private final int bits;
 
@@ -131,6 +132,7 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
     public class OpenAddressingSetIterator implements Iterator<T> {
         int pointer;
         Object delete;
+        Integer removed;
 
         public OpenAddressingSetIterator() {
             pointer = 0;
@@ -158,6 +160,8 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         public T next() throws NoSuchElementException {
             if (pointer == storage.length) throw new NoSuchElementException();
             Object element = storage[pointer];
+            delete = storage[pointer];
+            removed = pointer;
             if (hasNext()) {
                 pointer++;
                 while (pointer < storage.length) {
@@ -167,7 +171,6 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
                     pointer++;
                 }
             } else throw new NoSuchElementException();
-            delete = element;
             return (T) element;
         }
 
@@ -175,13 +178,16 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         //Ресурсоемкость O(1)
         @Override
         public void remove() {
-            if (delete == null) throw new IllegalStateException();
-            else {
-                OpenAddressingSet.this.remove(delete);
-                delete = null;
+            if (delete == null) {
+                throw new IllegalStateException();
+            } else {
+                storage[removed] = deleted;
+                size--;
             }
         }
 
     }
 }
+
+
 

@@ -2,8 +2,7 @@ package lesson6;
 
 import kotlin.NotImplementedError;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class JavaGraphTasks {
@@ -33,8 +32,59 @@ public class JavaGraphTasks {
      * Справка: Эйлеров цикл -- это цикл, проходящий через все рёбра
      * связного графа ровно по одному разу
      */
+
+    //Трудоемкость O(m * n), где n - кол-во вершин, m - кол-во ребер
+    //Ресурсоемкость O(m * n)
     public static List<Graph.Edge> findEulerLoop(Graph graph) {
-        throw new NotImplementedError();
+        LinkedList<Graph.Edge> allEdges = new LinkedList<>(graph.getEdges()); //чтобы убирать ребро, которое прошли
+        LinkedList<Graph.Vertex> allVertices = new LinkedList<>(graph.getVertices());
+        //прверка графа
+        if (allVertices.isEmpty() || allEdges.isEmpty()) return Collections.emptyList();
+
+        //проверка на эйлерность
+        int odd = 0;
+        for (Graph.Vertex v:
+             graph.getVertices()) {
+            if (graph.getNeighbors(v).size() % 2 != 0) {
+                odd++;
+            }
+        }
+        if (odd > 0) {
+            return Collections.emptyList();
+        }
+
+        ArrayDeque<Graph.Vertex> result = new ArrayDeque<>();
+        ArrayDeque<Graph.Vertex> vertices = new ArrayDeque<>();
+        vertices.push(allVertices.getFirst());
+        while (!vertices.isEmpty()) {
+            Graph.Vertex start = vertices.getFirst();
+            Set<Graph.Vertex> nextVertexes = graph.getNeighbors(start);
+            int deg = 0;
+            for (Graph.Vertex v :
+                    nextVertexes) {
+                Graph.Edge edge = graph.getConnection(start, v);
+                if (edge != null && allEdges.contains(edge)) {
+                    deg++;
+                    allEdges.remove(edge);
+                    vertices.push(v);
+                    break;
+                }
+            }
+            if (deg == 0) {
+                vertices.pop();
+                result.add(start);
+            }
+        }
+
+        List<Graph.Edge> answer = new ArrayList<>();
+        int limit = result.size() - 1;
+        for (int i = 0; i < limit; i++) {
+            Graph.Vertex starting = result.poll();
+            Graph.Vertex ending = result.getFirst();
+            assert starting != null;
+            answer.add(graph.getConnection(starting,ending));
+        }
+        return answer;
     }
 
     /**
@@ -93,8 +143,33 @@ public class JavaGraphTasks {
      *
      * Если на входе граф с циклами, бросить IllegalArgumentException
      */
+
+    //Трудоемкость O(2^n), где n - кол-во вершин
+    //Ресурсоемкость O(2^n)
     public static Set<Graph.Vertex> largestIndependentVertexSet(Graph graph) {
-        throw new NotImplementedError();
+        Set<Graph.Vertex> answer = new HashSet<>();
+        ArrayDeque<Graph.Vertex> allVertices = new ArrayDeque<>(graph.getVertices());
+        if(allVertices.isEmpty()) return Collections.emptySet();
+        LinkedList<Graph.Vertex> verticesExist = new LinkedList<>(graph.getVertices());
+        Graph.Vertex start = allVertices.getFirst();
+        answer.add(start);
+        while (!verticesExist.isEmpty()) {
+            verticesExist.remove(start);
+            for (Graph.Vertex v : allVertices) {
+                if (verticesExist.contains(v)) {
+                    Set<Graph.Vertex> neighbours = graph.getNeighbors(start);
+                    verticesExist.removeAll(neighbours);
+                    Graph.Edge connection = graph.getConnection(start, v);
+                    if (connection == null) {
+                        verticesExist.remove(v);
+                        answer.add(v);
+                        start = v;
+                        break;
+                    }
+                }
+            }
+        }
+        return answer;
     }
 
     /**
